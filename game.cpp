@@ -58,7 +58,7 @@ void Game::randSort() {
 }
 
 QSize Game::getPreferSize() {
-    return QSize(this->col * 25, this->row * 25);
+    return QSize(this->col * 25 + 20, this->row * 25 + 50);
 }
 
 void Game::reveal(int id) {
