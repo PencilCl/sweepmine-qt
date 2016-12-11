@@ -12,7 +12,8 @@ MainWindow::MainWindow()
     this->setCentralWidget(centerWindow);
     p = this;
 
-    newGame = new QPushButton(":)");
+    newGame = new QPushButton("🙂");
+    newGame->setStyleSheet("font-size: 22px;");
     showBomb = new QLabel("Bomb:20");
     showTime = new QLabel("time:0");
 
@@ -23,7 +24,7 @@ MainWindow::MainWindow()
 }
 
 void MainWindow::initialGame(int row, int col, int mines) {
-    newGame->setText(":)");
+    newGame->setText("🙂");
     showBomb->setText("Bomb:" + QString::number(mines));
 
     game = new Game(row, col, mines);
@@ -71,9 +72,10 @@ void MainWindow::gameEnd(bool result) {
     pthread_cancel(tid);
     if (result) {
         QMessageBox::information(this, "Win!", "Win!", QMessageBox::Ok, 0);
+        newGame->setText("😀");
     } else {
         QMessageBox::information(this, "Fali!", "Fali!", QMessageBox::Ok, 0);
-        newGame->setText(":(");
+        newGame->setText("☹️");
     }
 }
 
