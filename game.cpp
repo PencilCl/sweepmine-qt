@@ -17,6 +17,7 @@ Game::Game(int row, int col, int mines) : QGridLayout() {
     this->row =row;
     this->col = col;
     this->mines = mines;
+    this->leftMines = mines;
     this->gameOver = false;
 
     // 置随机数种子
@@ -134,7 +135,8 @@ void Game::mark(int id) {
     if (panes[id]->isReveal()) {
         return ;
     }
-    panes[id]->markMine();
+    leftMines += panes[id]->markMine();
+    emit updateMines(leftMines);
 }
 
 bool Game::isWin() {

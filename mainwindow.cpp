@@ -12,6 +12,7 @@ MainWindow::MainWindow()
     this->setCentralWidget(centerWindow);
 
     newGame = new QPushButton(":)");
+    showBomb = new QLabel("Bomb:20");
 
     connect(newGame, SIGNAL(clicked(bool)), this, SLOT(createNewGame()));
 
@@ -22,7 +23,8 @@ void MainWindow::initialGame(int row, int col, int mines) {
     game = new Game(row, col, mines);
 
     layout = new QGridLayout();
-    layout->addWidget(newGame, 0, col / 2, 1, 1);
+    layout->addWidget(newGame, 0, (col - 4) / 2, 1, 1);
+    layout->addWidget(showBomb, 0, col - 4, 1, 4);
     layout->addLayout(game, 1, 0, row, col);
 
     delete centerWindow->layout();
@@ -30,17 +32,18 @@ void MainWindow::initialGame(int row, int col, int mines) {
     this->setFixedSize(game->getPreferSize());
 
     connect(game, SIGNAL(end(bool)), this, SLOT(gameEnd(bool)));
+    connect(game, SIGNAL(updateMines(int)), this, SLOT(updateMines(int)));
 }
 
 void MainWindow::createNewGame() {
     newGame->setText(":)");
     bool ok;
     int row, col, mines;
-    row = QInputDialog::getInt(this, "input game row number", "input game row number", 16, 1, 30, 1, &ok);
+    row = QInputDialog::getInt(this, "input game row number", "input game row number", 16, 5, 30, 1, &ok);
     if (!ok) {
         return ;
     }
-    col = QInputDialog::getInt(this, "input game col number", "input game col number", 16, 1, 30, 1, &ok);
+    col = QInputDialog::getInt(this, "input game col number", "input game col number", 16, 5, 30, 1, &ok);
     if (!ok) {
         return ;
     }
@@ -52,6 +55,7 @@ void MainWindow::createNewGame() {
     if (!ok) {
         return ;
     }
+    showBomb->setText("Bomb:" + QString::number(mines));
     initialGame(row, col, mines);
 }
 
@@ -62,4 +66,8 @@ void MainWindow::gameEnd(bool result) {
         QMessageBox::information(this, "Fali!", "Fali!", QMessageBox::Ok, 0);
         newGame->setText(":(");
     }
+}
+
+void MainWindow::updateMines(int mines) {
+    showBomb->setText("Bomb:" + QString::number(mines));
 }

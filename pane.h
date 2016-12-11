@@ -15,7 +15,7 @@ public:
     bool isReveal();
     bool isMine();
     bool isMarkMine();
-    void markMine();
+    int markMine();
     void setId(int id);
     void setNum(int num);
     int getId();

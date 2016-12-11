@@ -14,7 +14,7 @@ public:
     ~Game();
     QSize getPreferSize();
 private:
-    int row, col, mines;
+    int row, col, mines, leftMines;
     Pane** panes;
     bool gameOver;
 
@@ -27,6 +27,7 @@ private:
     bool isWin();
 signals:
     void end(bool);
+    void updateMines(int leftMines);
 public slots:
     void reveal(int id);
     void mark(int id);

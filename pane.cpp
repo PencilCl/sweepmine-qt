@@ -42,9 +42,10 @@ bool Pane::isMarkMine() {
     return this->mark;
 }
 
-void Pane::markMine() {
+int Pane::markMine() {
     this->mark = this->mark ? false : true;
     render();
+    return this->mark ? -1 : 1;
 }
 
 void Pane::setId(int id) {
