@@ -10,9 +10,12 @@ MainWindow::MainWindow()
 {
     centerWindow = new QWidget;
     this->setCentralWidget(centerWindow);
+    p = this;
 
     newGame = new QPushButton(":)");
     showBomb = new QLabel("Bomb:20");
+    showTime = new QLabel("time:0");
+
 
     connect(newGame, SIGNAL(clicked(bool)), this, SLOT(createNewGame()));
 
@@ -20,9 +23,13 @@ MainWindow::MainWindow()
 }
 
 void MainWindow::initialGame(int row, int col, int mines) {
+    newGame->setText(":)");
+    showBomb->setText("Bomb:" + QString::number(mines));
+
     game = new Game(row, col, mines);
 
     layout = new QGridLayout();
+    layout->addWidget(showTime, 0, 0, 1, 3);
     layout->addWidget(newGame, 0, (col - 4) / 2, 1, 1);
     layout->addWidget(showBomb, 0, col - 4, 1, 4);
     layout->addLayout(game, 1, 0, row, col);
@@ -33,17 +40,19 @@ void MainWindow::initialGame(int row, int col, int mines) {
 
     connect(game, SIGNAL(end(bool)), this, SLOT(gameEnd(bool)));
     connect(game, SIGNAL(updateMines(int)), this, SLOT(updateMines(int)));
+
+    timeConsuming = 0;
+    pthread_create(&tid, NULL, thread_t, (void*)this);
 }
 
 void MainWindow::createNewGame() {
-    newGame->setText(":)");
     bool ok;
     int row, col, mines;
-    row = QInputDialog::getInt(this, "input game row number", "input game row number", 16, 5, 30, 1, &ok);
+    row = QInputDialog::getInt(this, "input game row number", "input game row number", 16, 6, 30, 1, &ok);
     if (!ok) {
         return ;
     }
-    col = QInputDialog::getInt(this, "input game col number", "input game col number", 16, 5, 30, 1, &ok);
+    col = QInputDialog::getInt(this, "input game col number", "input game col number", 16, 8, 30, 1, &ok);
     if (!ok) {
         return ;
     }
@@ -55,11 +64,11 @@ void MainWindow::createNewGame() {
     if (!ok) {
         return ;
     }
-    showBomb->setText("Bomb:" + QString::number(mines));
     initialGame(row, col, mines);
 }
 
 void MainWindow::gameEnd(bool result) {
+    pthread_cancel(tid);
     if (result) {
         QMessageBox::information(this, "Win!", "Win!", QMessageBox::Ok, 0);
     } else {
