@@ -31,7 +31,7 @@ void MainWindow::initialGame(int row, int col, int mines) {
 
     layout = new QGridLayout();
     layout->addWidget(showTime, 0, 0, 1, 3);
-    layout->addWidget(newGame, 0, (col - 4) / 2, 1, 1);
+    layout->addWidget(newGame, 0, col / 2, 1, 1);
     layout->addWidget(showBomb, 0, col - 4, 1, 4);
     layout->addLayout(game, 1, 0, row, col);
 
@@ -43,6 +43,7 @@ void MainWindow::initialGame(int row, int col, int mines) {
     connect(game, SIGNAL(updateMines(int)), this, SLOT(updateMines(int)));
 
     timeConsuming = 0;
+    pthread_cancel(tid);
     pthread_create(&tid, NULL, thread_t, (void*)this);
 }
 
